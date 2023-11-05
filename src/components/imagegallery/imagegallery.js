@@ -1,3 +1,3 @@
-export default function ImageGalery({ children }) {
+export default function ImageGallery({ children }) {
   return <ul className="ImageGallery">{children}</ul>;
 }
