@@ -8,6 +8,7 @@ export default function Searchbar({ onSubmit }) {
 
         <input
           className="SearchForm-input"
+          name="query"
           type="text"
           autoComplete="off"
           autoFocus
