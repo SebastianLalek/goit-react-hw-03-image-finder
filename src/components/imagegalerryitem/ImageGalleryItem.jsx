@@ -1,4 +1,4 @@
-function ImageGalleryItem({ image }) {
+export default function ImageGalleryItem({ image }) {
   return (
     <li className="ImageGalleryItem">
       <img
