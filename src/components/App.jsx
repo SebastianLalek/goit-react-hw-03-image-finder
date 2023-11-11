@@ -5,12 +5,14 @@ import Searchbar from './searchbar/Seachbar';
 import ImageGallery from './imagegallery/ImageGallery';
 import ImageGalleryItem from './imagegalerryitem/ImageGalleryItem';
 import Loader from './loader/Loader';
+import Button from './button/Button';
 
 class ImageFinder extends Component {
   state = {
     isLoading: false,
     query: '',
     pictures: [],
+    totalPictures: 0,
     currentPage: 1,
     error: '',
   };
@@ -35,6 +37,9 @@ class ImageFinder extends Component {
         .get(URL, { params })
         .then(response => response.data);
 
+      console.log(result);
+      this.setState({ totalPictures: result.totalHits });
+
       const photos = await result.hits;
 
       this.setState(state => ({
@@ -48,6 +53,17 @@ class ImageFinder extends Component {
       this.setState({ isLoading: false });
     }
   };
+
+  componentDidUpdate(prevProps, prevState) {
+    const newState = this.state;
+
+    if (prevState.currentPage !== newState.currentPage) {
+      this.getImages();
+    }
+
+    console.log(this.state);
+    console.log(this.state.pictures.length);
+  }
 
   handleSubmit = async e => {
     e.preventDefault();
@@ -64,8 +80,15 @@ class ImageFinder extends Component {
     );
   };
 
+  handleClick = () => {
+    this.setState(
+      state => ({ currentPage: state.currentPage + 1 })
+      // () => this.getImages()
+    );
+  };
+
   render() {
-    const { pictures, isLoading } = this.state;
+    const { pictures, totalPictures, isLoading } = this.state;
     return (
       <>
         <Searchbar onSubmit={this.handleSubmit} />
@@ -75,6 +98,9 @@ class ImageFinder extends Component {
             <ImageGalleryItem key={picture.id} image={picture} />
           ))}
         </ImageGallery>
+        {pictures.length !== 0 && pictures.length !== totalPictures && (
+          <Button onClick={this.handleClick} />
+        )}
       </>
     );
   }
