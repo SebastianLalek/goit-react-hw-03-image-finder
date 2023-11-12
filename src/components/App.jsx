@@ -99,13 +99,13 @@ class ImageFinder extends Component {
     return (
       <>
         <Searchbar onSubmit={this.handleSubmit} />
-        {isLoading && <Loader />}
         <ImageGallery onClick={this.imageHandler}>
           {pictures.map(picture => (
             <ImageGalleryItem key={picture.id} image={picture} />
           ))}
         </ImageGallery>
         {modalOn && <Modal image={modalImage} onClick={this.modalHandler} />}
+        {isLoading && <Loader />}
         {pictures.length !== 0 && pictures.length !== totalPictures && (
           <Button onClick={this.handleClick} />
         )}
