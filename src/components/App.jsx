@@ -84,12 +84,16 @@ class ImageFinder extends Component {
   imageHandler = e => {
     const largeImage = e.target.dataset.image;
 
+    if (largeImage === undefined) {
+      return;
+    }
+
     this.setState({ modalImage: largeImage, modalOn: true });
   };
 
   modalHandler = e => {
     if (e.target.className === 'Overlay') {
-      this.setState({ modalImage: '', modalOn: false });
+      this.setState({ modalOn: false });
     }
   };
 
@@ -104,7 +108,7 @@ class ImageFinder extends Component {
             <ImageGalleryItem key={picture.id} image={picture} />
           ))}
         </ImageGallery>
-        {modalOn && <Modal image={modalImage} onClick={this.modalHandler} />}
+        {modalOn && <Modal imageSrc={modalImage} onClick={this.modalHandler} />}
         {isLoading && <Loader />}
         {pictures.length !== 0 && pictures.length !== totalPictures && (
           <Button onClick={this.handleClick} />
