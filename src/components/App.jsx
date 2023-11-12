@@ -6,10 +6,13 @@ import ImageGallery from './imagegallery/ImageGallery';
 import ImageGalleryItem from './imagegalerryitem/ImageGalleryItem';
 import Loader from './loader/Loader';
 import Button from './button/Button';
+import Modal from './modal/Modal';
 
 class ImageFinder extends Component {
   state = {
     isLoading: false,
+    modalOn: false,
+    modalImage: '',
     query: '',
     pictures: [],
     totalPictures: 0,
@@ -37,7 +40,6 @@ class ImageFinder extends Component {
         .get(URL, { params })
         .then(response => response.data);
 
-      console.log(result);
       this.setState({ totalPictures: result.totalHits });
 
       const photos = await result.hits;
@@ -45,8 +47,6 @@ class ImageFinder extends Component {
       this.setState(state => ({
         pictures: [...state.pictures, ...photos],
       }));
-
-      console.log(photos);
     } catch (error) {
       this.setState({ error: error.toString() });
     } finally {
@@ -57,12 +57,12 @@ class ImageFinder extends Component {
   componentDidUpdate(prevProps, prevState) {
     const newState = this.state;
 
-    if (prevState.currentPage !== newState.currentPage) {
+    if (
+      prevState.currentPage !== newState.currentPage ||
+      prevState.query !== newState.query
+    ) {
       this.getImages();
     }
-
-    console.log(this.state);
-    console.log(this.state.pictures.length);
   }
 
   handleSubmit = async e => {
@@ -70,34 +70,42 @@ class ImageFinder extends Component {
     const form = e.currentTarget;
     const query = form.elements.query.value;
 
-    this.setState(
-      {
-        query: query,
-        pictures: [],
-        currentPage: 1,
-      },
-      () => this.getImages()
-    );
+    this.setState({
+      query: query,
+      pictures: [],
+      currentPage: 1,
+    });
   };
 
   handleClick = () => {
-    this.setState(
-      state => ({ currentPage: state.currentPage + 1 })
-      // () => this.getImages()
-    );
+    this.setState(state => ({ currentPage: state.currentPage + 1 }));
+  };
+
+  imageHandler = e => {
+    const largeImage = e.target.dataset.image;
+
+    this.setState({ modalImage: largeImage, modalOn: true });
+  };
+
+  modalHandler = e => {
+    if (e.target.className === 'Overlay') {
+      this.setState({ modalImage: '', modalOn: false });
+    }
   };
 
   render() {
-    const { pictures, totalPictures, isLoading } = this.state;
+    const { pictures, totalPictures, isLoading, modalOn, modalImage } =
+      this.state;
     return (
       <>
         <Searchbar onSubmit={this.handleSubmit} />
         {isLoading && <Loader />}
-        <ImageGallery>
+        <ImageGallery onClick={this.imageHandler}>
           {pictures.map(picture => (
             <ImageGalleryItem key={picture.id} image={picture} />
           ))}
         </ImageGallery>
+        {modalOn && <Modal image={modalImage} onClick={this.modalHandler} />}
         {pictures.length !== 0 && pictures.length !== totalPictures && (
           <Button onClick={this.handleClick} />
         )}

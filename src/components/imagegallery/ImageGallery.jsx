@@ -1,3 +1,7 @@
-export default function ImageGallery({ children }) {
-  return <ul className="ImageGallery">{children}</ul>;
+export default function ImageGallery({ children, onClick }) {
+  return (
+    <ul className="ImageGallery" onClick={onClick}>
+      {children}
+    </ul>
+  );
 }
