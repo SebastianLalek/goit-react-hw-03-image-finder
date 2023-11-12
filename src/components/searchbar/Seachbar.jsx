@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 export default function Searchbar({ onSubmit }) {
   return (
     <header className="Searchbar">
@@ -18,3 +20,7 @@ export default function Searchbar({ onSubmit }) {
     </header>
   );
 }
+
+Searchbar.propTypes = {
+  onSubmit: PropTypes.func,
+};
